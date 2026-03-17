@@ -17,9 +17,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: "https://currency-one-theta.vercel.app",
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  origin: "*"
 }));
 
 // Handle preflight requests
