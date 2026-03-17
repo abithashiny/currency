@@ -3,6 +3,10 @@ import pandas as pd
 from datetime import datetime, timedelta
 import json
 import os
+import sys
+
+from_currency = sys.argv[1] if len(sys.argv) > 1 else "USD"
+to_currency = sys.argv[2] if len(sys.argv) > 2 else "INR"
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(BASE_DIR, "currency_model.pkl")
@@ -14,7 +18,15 @@ forecast = model.predict(future)
 
 trend = forecast['yhat'].tail(7).reset_index(drop=True)
 
-current_rate = 92.38
+# Set correct current rates (approx or you can fetch later from API)
+if from_currency == "EUR":
+    current_rate = 106
+elif from_currency == "GBP":
+    current_rate = 122
+elif from_currency == "JPY":
+    current_rate = 0.62
+else:
+    current_rate = 92
 base_value = forecast['yhat'].iloc[-8]
 
 trend_adjustment = trend - base_value

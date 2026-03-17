@@ -33,7 +33,7 @@ const PredictionPanel = () => {
     const fetchPrediction = async () => {
       setLoading(true);
       try {
-        const { data } = await getPrediction(from, to, 7);
+       const { data } = await getPrediction(from, to);
         setPrediction(data);
       } catch (err) {
         console.error('Prediction error:', err);

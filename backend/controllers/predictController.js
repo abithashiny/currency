@@ -14,11 +14,13 @@ const predict = async (req, res) => {
 const predictML = async (req, res) => {
   try {
 
-    const prediction = await generateMLPrediction();
+    const { from = "USD", to = "INR" } = req.query;
+
+    const prediction = await generateMLPrediction(from, to);
 
     res.json({
-      from: "USD",
-      to: "INR",
+      from,
+      to,
       labels: prediction.labels,
       predictions: prediction.predictions,
       confidence: prediction.predictions.map(() => 90),

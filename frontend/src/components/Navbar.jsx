@@ -1,84 +1,99 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 import { HiMenu, HiX, HiSun, HiMoon } from 'react-icons/hi';
 
-const Navbar = ({ darkMode, setDarkMode, activeSection, setActiveSection }) => {
+const Navbar = ({ darkMode, setDarkMode }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const menuItems = ['Dashboard', 'Converter', 'History'];
+
+  const links = useMemo(
+    () => [
+      { to: '/', label: 'Home' },
+      { to: '/converter', label: 'Converter' },
+      { to: '/history', label: 'History' },
+      { to: '/news', label: 'News' },
+      { to: '/prediction', label: 'Prediction' },
+    ],
+    []
+  );
+
+  const navLinkClass = ({ isActive }) =>
+    [
+      'px-3 py-2 rounded-xl text-sm font-semibold tracking-tight transition-all duration-200',
+      'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent',
+      isActive
+        ? 'bg-primary/10 text-text shadow-lg shadow-black/5'
+        : 'text-text/70 hover:text-text hover:bg-primary/10',
+    ].join(' ');
 
   return (
-    <nav className="sticky top-0 z-50 glass-card border-b border-border dark:border-border-dark">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <span className="text-white font-bold text-lg">₹</span>
-            </div>
-            <h1 className="text-xl font-bold gradient-text hidden sm:block">
-              Currency Analytics Dashboard
-            </h1>
-            <h1 className="text-lg font-bold gradient-text sm:hidden">
-              Currency Dashboard
-            </h1>
-          </div>
+    <header className="sticky top-0 z-50">
+      <div className="backdrop-blur-xl bg-white/55 border-b border-border/70">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between gap-3">
+            <Link to="/" className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-black/15">
+                <span className="text-white font-extrabold text-base">FX</span>
+              </div>
+              <div className="hidden sm:block">
+                <div className="text-sm font-semibold text-text leading-tight">Currency Dashboard</div>
+                <div className="text-[11px] text-text/60 -mt-0.5">Analytics • News • AI Forecast</div>
+              </div>
+            </Link>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-1">
-            {menuItems.map((item) => (
+            <nav className="hidden md:flex items-center gap-1">
+              {links.map((l) => (
+                <NavLink key={l.to} to={l.to} className={navLinkClass} end={l.to === '/'}>
+                  {l.label}
+                </NavLink>
+              ))}
+            </nav>
+
+            <div className="flex items-center gap-2">
               <button
-                key={item}
-                onClick={() => setActiveSection(item.toLowerCase())}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  activeSection === item.toLowerCase()
-                    ? 'bg-primary text-white shadow-lg shadow-primary/25'
-                    : 'text-text dark:text-text-dark hover:bg-primary/10'
-                }`}
+                type="button"
+                onClick={() => setDarkMode((v) => !v)}
+                className="inline-flex items-center justify-center h-10 w-10 rounded-xl bg-primary/10 hover:bg-primary/15 text-text transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+                aria-label="Toggle dark mode"
               >
-                {item}
+                {darkMode ? <HiSun className="w-5 h-5 text-accent" /> : <HiMoon className="w-5 h-5 text-text/80" />}
               </button>
-            ))}
-          </div>
 
-          {/* Right Actions */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              className="p-2.5 rounded-xl bg-bg dark:bg-card-dark text-text dark:text-text-dark hover:bg-primary/10 dark:hover:bg-primary/20 transition-all duration-200 hover:scale-105"
-              aria-label="Toggle dark mode"
-            >
-              {darkMode ? <HiSun className="w-5 h-5 text-yellow-400" /> : <HiMoon className="w-5 h-5 text-indigo-500" />}
-            </button>
-
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 rounded-lg text-text dark:text-text-dark hover:bg-primary/10"
-            >
-              {mobileOpen ? <HiX className="w-6 h-6" /> : <HiMenu className="w-6 h-6" />}
-            </button>
+              <button
+                type="button"
+                onClick={() => setMobileOpen((v) => !v)}
+                className="md:hidden inline-flex items-center justify-center h-10 w-10 rounded-xl bg-primary/10 hover:bg-primary/15 text-text transition-all"
+                aria-label="Toggle navigation menu"
+              >
+                {mobileOpen ? <HiX className="w-6 h-6" /> : <HiMenu className="w-6 h-6" />}
+              </button>
+            </div>
           </div>
         </div>
+
+        {mobileOpen && (
+          <div className="md:hidden border-t border-border/70">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3 grid gap-1">
+              {links.map((l) => (
+                <NavLink
+                  key={l.to}
+                  to={l.to}
+                  end={l.to === '/'}
+                  onClick={() => setMobileOpen(false)}
+                  className={({ isActive }) =>
+                    [
+                      'px-4 py-3 rounded-xl text-sm font-semibold transition-all',
+                      isActive ? 'bg-primary/10 text-text' : 'text-text/70 hover:text-text hover:bg-primary/10',
+                    ].join(' ')
+                  }
+                >
+                  {l.label}
+                </NavLink>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
-
-      {/* Mobile Menu */}
-      {mobileOpen && (
-        <div className="md:hidden border-t border-border dark:border-border-dark px-4 py-3 space-y-1 fade-in-up">
-          {menuItems.map((item) => (
-            <button
-              key={item}
-              onClick={() => { setActiveSection(item.toLowerCase()); setMobileOpen(false); }}
-              className={`block w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                activeSection === item.toLowerCase()
-                  ? 'bg-primary text-white'
-                  : 'text-text dark:text-text-dark hover:bg-primary/10'
-              }`}
-            >
-              {item}
-            </button>
-          ))}
-        </div>
-      )}
-    </nav>
+    </header>
   );
 };
 

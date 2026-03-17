@@ -30,7 +30,6 @@ export const sendChat = (message) => API.post('/ai/chat', { message });
 
 // Prediction API
 // Prediction API
-export const getPrediction = () =>
-  API.get('/predict/predict-ml');
-
+export const getPrediction = (from, to) =>
+  API.get('/predict/predict-ml', { params: { from, to } });
 export default API;
