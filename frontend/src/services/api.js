@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
   timeout: 10000,
 });
 
@@ -29,7 +29,7 @@ export const getNews = () => API.get('/news');
 export const sendChat = (message) => API.post('/ai/chat', { message });
 
 // Prediction API
-// Prediction API
 export const getPrediction = (from, to) =>
   API.get('/predict/predict-ml', { params: { from, to } });
+
 export default API;
