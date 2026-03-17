@@ -1,5 +1,4 @@
 const { generatePrediction } = require('../services/predictService');
-const { generateMLPrediction } = require('../services/mlPredictionService');
 
 const predict = async (req, res) => {
   try {
@@ -11,24 +10,20 @@ const predict = async (req, res) => {
   }
 };
 
+// 🔥 FIXED ML (fallback to normal prediction)
 const predictML = async (req, res) => {
   try {
+    const { from = 'USD', to = 'INR', days = 7 } = req.query;
 
-    const { from = "USD", to = "INR" } = req.query;
-
-    const prediction = await generateMLPrediction(from, to);
+    const prediction = await generatePrediction(from, to, parseInt(days));
 
     res.json({
-      from,
-      to,
-      labels: prediction.labels,
-      predictions: prediction.predictions,
-      confidence: prediction.predictions.map(() => 90),
-      model: "Prophet ML Forecast",
-      generatedAt: new Date().toISOString()
+      ...prediction,
+      model: "Simulated ML Forecast"
     });
 
   } catch (error) {
+    console.error("ML Prediction error:", error.message);
     res.status(500).json({ error: error.message });
   }
 };
