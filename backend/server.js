@@ -1,4 +1,3 @@
-require("dotenv").config();
 
 const express = require('express');
 const cors = require('cors');
@@ -17,7 +16,14 @@ connectDB();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: "https://currency-one-theta.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
+// Handle preflight requests
+app.options("*", cors());
 app.use(express.json());
 
 // Routes
